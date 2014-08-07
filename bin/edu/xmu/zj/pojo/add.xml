@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>													
+<!DOCTYPE sqlMap                                                                                                                            
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"                                                                                                 
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Add">
+
+	<typeAlias alias="posts" type="edu.xmu.zj.pojo.Posts" />
+	<typeAlias alias="threads" type="edu.xmu.zj.pojo.Threads" />
+	<typeAlias alias="task" type="edu.xmu.zj.pojo.Task" />
+	<typeAlias alias="cancer" type="edu.xmu.zj.pojo.Cancer" />
+	<typeAlias alias="company" type="edu.xmu.zj.pojo.Company" />
+	<typeAlias alias="runningTask" type="edu.xmu.zj.pojo.RunningTask" />
+	<typeAlias alias="user" type="edu.xmu.zj.pojo.User" />
+
+	<insert id="addPosts" parameterClass="posts">
+		insert into posts(tid , pid
+		, userid ,username, iparea , dateline,savetime ,
+		message , messagenotag
+		, purl , title , istopic,turl)
+		values(#tid#,#pid#,#userid#,#username#,#iparea#,#dateline#,now(),#message#,#messagenotag#,#purl#,#title#,#istopic#,#turl#)
+	</insert>
+
+	<insert id="addThreads" parameterClass="threads">
+		insert into
+		threads(tid,fid,title,dateline,lastpost,views,replies,turl,userid,username,taskid,url,type)
+		values(#tid#,#fid#,#title#,#dateline#,#lastpost#,#views#,#replies#,#turl#,#userid#,#username#,#taskid#,#url#,#type#)
+	</insert>
+
+	<insert id="addTask" parameterClass="task">
+		insert into task(taskid ,
+		url , tname , ucookies,nextStart)
+		values(#taskid# , #url# , #tname# , #ucookies#,now())
+	</insert>
+	<!-- ,qq,telphone,email -->
+	<insert id="addCancers" parameterClass="cancer">
+		insert into
+		cancer(name,jiguan,sex,birthday,height,huny,xueli,gongzuo,location,yixiang,education,jingli,language,training,computer,evaluation,filename,qq,telphone,phone,msn,fxin)
+		values(#name#,#jiguan#,#sex#,#birthday#,#height#,#huny#,#xueli#,#gongzuo#,#location#,#yixiang#,#education#,#jingli#,#language#,#training#,#computer#,#evaluation#,#filename#,#qq#,#telphone#,#phone#,#msn#,#fxin#)
+	</insert>
+
+
+	<insert id="addCompanys" parameterClass="company">
+		insert into
+		company(name,type,location,nature,memo,telphone,contact,phone,
+		fax,address,website,qq,msn,feixin)
+		values(#name#,#type#,#location#,#nature#,#memo#,#telphone#,#contact#,#phone#,
+		#fax#,#address#,#website#,#qq#,#msn#,#feixin#)
+	</insert>
+
+	<insert id="addRunningTask" parameterClass="runningTask">
+		insert into
+		runningTask(taskid,time) values(#taskid# , now())
+	</insert>
+	
+	<insert id="addUser" parameterClass="user">
+		insert into
+		user(uid,uname,registdate,lastdate,sex,birthday,hometown,location,groupName,lastActivity,lastpost,comeFrom,url)
+		values(#uid#,#uname#,#registdate#,#lastdate#,#sex#,#birthday#,#hometown#,#location#,#groupName#,#lastActivity#,#lastpost#,#comeFrom#,#url#)
+	</insert>
+
+
+
+</sqlMap>                                                                                                                                   

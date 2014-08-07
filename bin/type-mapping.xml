@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<process-mappings>
+	<process-mapping>
+<!--		 对应关系名称 -->
+		<typename>ptfish</typename>
+<!--		 对应关系实际解析类，该类需要继承一个公共抽象类或实现一个公共接口 -->
+		<classname>edu.xmu.zj.plugins.PtfishProcessImpl</classname>
+	</process-mapping>
+	
+	<process-mapping>
+<!--		 对应关系名称 -->
+		<typename>ptperson</typename>
+<!--		 对应关系实际解析类，该类需要继承一个公共抽象类或实现一个公共接口 -->
+		<classname>edu.xmu.zj.plugins.PtPersonProcessImpl</classname>
+	</process-mapping>
+	
+	<process-mapping>
+<!--		 对应关系名称 -->
+		<typename>ptcompany</typename>
+<!--		 对应关系实际解析类，该类需要继承一个公共抽象类或实现一个公共接口 -->
+		<classname>edu.xmu.zj.plugins.PtCompanyProcessImpl</classname>
+	</process-mapping>
+	
+	<process-mapping>
+<!--		 对应关系名称 -->
+		<typename>BBS81</typename>
+<!--		 对应关系实际解析类，该类需要继承一个公共抽象类或实现一个公共接口 -->
+		<classname>edu.xmu.zj.plugins.BBS81ProcessImpl</classname>
+	</process-mapping>
+	
+		<process-mapping>
+<!--		 对应关系名称 -->
+		<typename>BBS51</typename>
+<!--		 对应关系实际解析类，该类需要继承一个公共抽象类或实现一个公共接口 -->
+		<classname>edu.xmu.zj.plugins.BBS51ProcessImpl</classname>
+	</process-mapping>
+	
+</process-mappings>
+		

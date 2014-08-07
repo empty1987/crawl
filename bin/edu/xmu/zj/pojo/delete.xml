@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>													
+<!DOCTYPE sqlMap                                                                                                                            
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"                                                                                                 
+"http://www.ibatis.com/dtd/sql-map-2.dtd">                                                                                                  
+<sqlMap namespace="Delete">                                                                                                                                    
+	 
+	 <typeAlias alias="posts" type="edu.xmu.zj.pojo.Posts" />    
+	 	 <typeAlias alias="threads" type="edu.xmu.zj.pojo.Threads" />   
+	 	 	 <typeAlias alias="task" type="edu.xmu.zj.pojo.Task" />   
+	 
+	<delete id="deleteTask" parameterClass="java.lang.Long">
+		delete from task where id=#id#
+	</delete>	
+	
+	<delete id="deleteRunningTask" >
+		delete from runningTask
+	</delete> 
+	
+	<delete id="deleteRunningTaskById" parameterClass="java.lang.Long" >
+		delete from runningTask where taskid=#taskid#
+	</delete> 
+	
+</sqlMap>                                                                                                                                   

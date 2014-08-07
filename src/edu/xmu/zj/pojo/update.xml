@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>													
+<!DOCTYPE sqlMap                                                                                                                            
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"                                                                                                 
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Update">
+
+	<typeAlias alias="posts" type="edu.xmu.zj.pojo.Posts" />
+	<typeAlias alias="threads" type="edu.xmu.zj.pojo.Threads" />
+	<typeAlias alias="task" type="edu.xmu.zj.pojo.Task" />
+	
+	
+	<!-- 更新任务的下次启动时间 -->
+	<update id="updateNextStart" parameterClass="java.lang.String">
+		update task set nextStart=date_add(now() , INTERVAL sleeptime second) where taskid=#taskid#
+	</update>
+	
+	<!-- 更新任务的下次启动时间 -->
+	<update id="updateTask" parameterClass="task">
+		update task set nowdate=date_add(nowdate , INTERVAL -1 MINUTE),lastdate=#lastdate# , status=2 where taskid=#taskid#
+	</update>
+	<update id="updateType" parameterClass="task">
+		update task set type=#type# where taskid=#taskid#
+	</update>
+	<update id="updateTaskById" parameterClass="java.lang.Long">
+		update task set status=1 where id=#id#
+	</update>
+	
+	<update id="updateTaskById2" parameterClass="java.lang.Long">
+		update task set status=2 where id=#id#
+	</update>
+	
+</sqlMap>                                                                                                                                   

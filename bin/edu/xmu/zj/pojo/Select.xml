@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>													
+<!DOCTYPE sqlMap                                                                                                                            
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"                                                                                                 
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="Select">
+
+	<typeAlias alias="posts" type="edu.xmu.zj.pojo.Posts" />
+	<typeAlias alias="threads" type="edu.xmu.zj.pojo.Threads" />
+	<typeAlias alias="task" type="edu.xmu.zj.pojo.Task" />
+
+
+	<select id="getAllTask" resultClass="task">
+		select id, taskid ,url,tname
+		, type , maxthread , lastdate , nowdate , nextStart , webtype ,url2,status
+		from task
+	</select>
+	<select id="getTaskByTaskID" parameterClass="java.lang.String"
+		resultClass="task">
+		select id, taskid ,url,tname , type , maxthread , lastdate
+		, nowdate , nextStart , webtype ,url2 , status from task where taskid=#taskid#
+	</select>
+	<select id="getThreadByTID" parameterClass="java.lang.String"
+		resultClass="threads">
+		select * from threads where tid=#tid#
+	</select>
+	
+	<select id="getTask" parameterClass="java.lang.String"	resultClass="task">
+		select *  from task where   DATEDIFF( now(),nextstart) > 0 and id not in (select taskid from runningtask) order by nextstart asc
+	</select>
+
+	<!-- 获取帖子的最后更新时间 -->
+
+	<select id="getUpdateTimeByTid" parameterClass="java.lang.String"
+		resultClass="java.util.Date">
+		select max(dateline) from posts where tid=#tid#   
+	</select>
+
+
+	<select id="getUpdateTime" resultClass="java.util.Date">
+		select max(time) from
+		cancer
+	</select>
+	
+	<select id="getUpdateTimeByFid" resultClass="java.util.Date" parameterClass="java.lang.String">
+		select max(dateline) from threads where fid=#fid#
+	</select>
+	
+	
+
+	<select id="getNowTask" resultClass="java.lang.Integer">
+		select count(*) from runningTask
+	</select>
+	
+</sqlMap>                                                                                                                                   

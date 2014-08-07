@@ -102,7 +102,6 @@ public class BaseDaoImpl implements BaseDao {
 			sqlMapper.executeBatch();
 			logger.debug("ibatis批量插入结束");
 		} catch (SQLException e) {
-			logger.error("批量插入失败",e);
 		}
 
 	}

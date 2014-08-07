@@ -25,6 +25,7 @@ import edu.xmu.zj.dao.impl.BaseDaoImpl;
 import edu.xmu.zj.pojo.Cancer;
 import edu.xmu.zj.pojo.Company;
 import edu.xmu.zj.pojo.Posts;
+import edu.xmu.zj.pojo.RunningTask;
 import edu.xmu.zj.pojo.Task;
 import edu.xmu.zj.pojo.Threads;
 import edu.xmu.zj.pojo.User;
@@ -129,6 +130,8 @@ public abstract class TaskAnalyseAbs extends Thread {
 			// 获取了实际页面进行分析
 			this.analyseHTML(this.httpBody);
 		}
+		
+		TaskRun.task.setPages(TaskRun.task.getPages() + 1);
 	}
 
 	/**
@@ -265,7 +268,7 @@ public abstract class TaskAnalyseAbs extends Thread {
 			this.createForumPagesUrl(bodyStr);
 			logger.debug("完成createForumPagesUrl");
 			this.cancers = this.getCancer(bodyStr);
-			logger.debug("完成updateTaskDates");
+			logger.debug("完成获取职员");
 			if (this.cancers != null && this.cancers.size() > 0) {
 				baseDao.insertList("Add.addCancers", this.cancers);
 			}

@@ -152,7 +152,7 @@ public class TaskRun extends Thread {
 	public static void main(String[] args) {
 		Properties props = new Properties();
 		try {
-			TaskRun trun = new TaskRun(1+"");
+			TaskRun trun = new TaskRun(3+"");
 			trun.start();
 		} catch (Exception e) {
 			logger.error("主线程运行异常", e);

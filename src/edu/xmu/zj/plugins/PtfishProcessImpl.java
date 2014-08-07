@@ -157,8 +157,10 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 			Document doc = JavaUtil.getDocument(tempbodyStr);
 			if (!parsePostPage(doc))
 				return returnPosts;
-			NodeList postNodes = XPathAPI.selectNodeList(doc,
-					"//DIV[@id='postlist']/DIV");
+			
+//			System.out.println(JavaUtil.getTagContent(doc));
+			
+			NodeList postNodes = XPathAPI.selectNodeList(doc,"//DIV[@id='postlist']/DIV");
 			logger.debug("found: " + postNodes.getLength());
 			for (int i = 0; i < postNodes.getLength(); i++) {
 				logger.debug("for begin");
@@ -238,6 +240,7 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 					baseDao.save("Add.addUser", user);
 					
 				}catch (Exception e) {
+					logger.error("出错URL为:"+this.url+";");
 				}
 				
 				logger.debug("获取用户名节点");
@@ -251,9 +254,9 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 				for(int n = 0 ; n < imgNodes.getLength() ; n++){
 					String imgHref = JavaUtil.getNodeValue(imgNodes.item(n), "src");
 					if(n == 0){
-						tNotagContext += "<br/>包含图片:"+imgHref;
+						tNotagContext += "<br/>包含图片:<img src='http://www.ptfish.com/"+imgHref+"'>";
 					}else{
-						tNotagContext += "<br/>"+imgHref;
+						tNotagContext += "<br/><img src='http://www.ptfish.com/"+imgHref+"'>";
 					}
 				}
 
@@ -262,9 +265,10 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 				logger.debug("回复日期:" + tDateline);
 				logger.debug("回复内容:" + tTagContext);
 				
-				 if(tDateline.getTime() <= this.taskLastDate.getTime()){
-					 break;
-				 }
+				Date lastPost = (Date) baseDao.getObject("Select.getUpdateTimeByTid" , tid);
+				if ( (lastPost != null && tDateline.getTime() <= lastPost.getTime())) {
+					break;
+				}
 
 				Posts post = new Posts();
 				post.setDateline(tDateline);
@@ -283,23 +287,19 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 				post.setUsername(tuser);
 				post.setUserid(uid);
 				
-				
-
 				post.setTaskid(this.task.getTaskid());
 
 				if (pageIndex == 1 && i < 10) {
 					Node tempNode = XPathAPI.selectSingleNode(postNode,
 									".//TD[@class='plc']//STRONG//EM");
-					if (JavaUtil.getTextContent(tempNode).indexOf("楼主") != -1
-							|| JavaUtil.getTextContent(tempNode).indexOf("1") != -1
-							|| JavaUtil.getTextContent(tempNode).indexOf("1楼") != -1) {
-						post.setIstopic(true);
+					String topContent = JavaUtil.getTextContent(tempNode);
+					if(topContent != null){
+						if (topContent.indexOf("楼主") != -1
+								|| topContent.indexOf("1") != -1
+								|| topContent.indexOf("1楼") != -1) {
+							post.setIstopic(true);
+						}
 					}
-				}
-				
-				Date lastPost = (Date) baseDao.getObject("Select.getUpdateTimeByTid" , tid);
-				if ( (lastPost != null && tDateline.getTime() <= lastPost.getTime())) {
-					continue;
 				}
 
 				if (!returnPosts.contains(post))
@@ -308,6 +308,8 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 
 			}
 		} catch (Exception e) {
+			logger.error("保存回复失败",e);
+			
 		}
 		logger.debug("退出 getPosts");
 		return returnPosts;
@@ -512,7 +514,7 @@ public class PtfishProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 	
 //	private String filepath = this.getClass().getResource("/").getPath().replaceAll("%20", " ")+"type-mapping.xml";
 	public static void main(String[] args) throws DocumentException, UnsupportedEncodingException {
-		String bodyStr = JavaUtil.readFile("d:/1.htm");
+		String bodyStr = JavaUtil.readFile("d:/1.html");
 		bodyStr = new String(bodyStr.getBytes("GBK") , "gbk");
 		PtfishProcessImpl process = new PtfishProcessImpl(new Task(),"http://www.ptfish.com/thread-384221-1-2.html");
 		process.getPosts(bodyStr);

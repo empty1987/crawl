@@ -27,8 +27,8 @@ public class Task {
 	private Date nextStart;
 	private String url2;
 	public int status;
-	private int pages;
-	private int lastdpages;
+	private int pages; // 页码
+	private int lastdpages;//最近爬取的页码
 
 	private Integer nondtimes = 0;
 	private Integer closetime = 0;

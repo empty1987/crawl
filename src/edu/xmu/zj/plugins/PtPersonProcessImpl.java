@@ -37,8 +37,8 @@ import edu.xmu.zj.util.propertiesUtils;
 public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 	private Logger logger = Logger.getLogger(PtfishProcessImpl.class);
 	BaseDao baseDao = new BaseDaoImpl();
-	private String forumMoudle = "http://www.eptrc.com/person_list.aspx"; // 列表页
-	private String threadMoudle = "view_resume.aspx";// 具体页
+	private String forumMoudle = "http://www.pt791.com/jianli/"; // 列表页
+	private String threadMoudle = "jianli";// 具体页
 
 	private String tid;
 	private String fid;
@@ -82,7 +82,6 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 				int[] pageInfo = getPageInfo(doc);
 				int iCurPage = pageInfo[0];
 				int iTolPage = pageInfo[1];
-
 				if (iCurPage < iTolPage) {
 					String nextPage = null;
 					nextPage = buildPage(iCurPage + 1);
@@ -100,12 +99,15 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 	public String buildPage(int pageIndex) {
 		// http://www.eptrc.com/person_list.aspx?page=2
 		String newUrl = null;
-		if (url.indexOf("page=") == -1) {
-			newUrl = url + "?page=" + pageIndex;
+		if(!url.endsWith("/")){
+			url += "/";
+		}
+		if (url.indexOf("page") == -1) {
+			newUrl = url + "page" + pageIndex+"/";
 			return newUrl;
 		}
-		if (url.indexOf("page=") != -1)
-			newUrl = url.replaceFirst("page=(\\d)+", "page=" + pageIndex);
+		if (url.indexOf("page") != -1)
+			newUrl = url.replaceFirst("page(\\d)+", "page" + pageIndex);
 
 		logger.debug("new URL:" + newUrl);
 		return newUrl;
@@ -164,10 +166,10 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 						Node urlNode = XPathAPI.selectSingleNode(threadNode,
 								hrefXpath);
 						String userUrl = JavaUtil.getNodeValue(urlNode, "href");
-						userUrl = "http://www.eptrc.com/" + userUrl;
+						userUrl = "http://www.pt791.com" + userUrl;
 						String viewInfo = JavaUtil.getHttpBody(userUrl, null);
-						// http://www.eptrc.com/view_resume.aspx?uid=140655
-						String uid = JavaUtil.match(userUrl, "uid=(\\d+)")[1];
+						// http://www.pt791.com/jianli/119471/
+						String uid = JavaUtil.match(userUrl, "jianli/(\\d+)/")[1];
 						Cancer cancer = getCancerInfo(viewInfo, uid);
 
 						if (!returnThreads.contains(cancer))
@@ -202,11 +204,13 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 					XPathAPI.selectSingleNode(mainNode, sexXpath)).replaceAll(
 					"\"", "'");
 
-			String url = "http://www.eptrc.com/"
-					+ viewInfo.substring(
+			String url =  viewInfo.substring(
 							viewInfo.indexOf("的照片\"") + "的照片\"".length()
 									+ " src=\"".length(),
 							viewInfo.indexOf("onload") - 2);
+			if(!url.startsWith("http")){
+				url = "http://www.pt791.com"+url;
+			}
 			String filename = getFileName(url);
 
 			String jiguanXpath = ".//DIV[@class='g-panel panel1']//TR[2]/TD[@class='navy']";
@@ -281,9 +285,9 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 			/**
 			 * 联系方式暂时不写
 			 */
-			String temp = "http://www.eptrc.com/check.aspx?action=ajax_viewresume&op=contact&id="
-					+ uid;
-			String body = JavaUtil.getHttpBody(temp, task.getUcookies());
+//			String temp = "http://www.eptrc.com/check.aspx?action=ajax_viewresume&op=contact&id="
+//					+ uid;
+//			String body = JavaUtil.getHttpBody(temp, task.getUcookies());
 			// <li><b>手机号码：</b><em><img
 			// src="UploadFiles/contact/person/9d/1c9f88083b45c248685882840fa237.jpg"
 			// align=absmiddle /></em></li>
@@ -293,50 +297,50 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 			// <li><b>QQ：</b><em></em></li>
 			// <li><b>MSN：</b><em></em></li>
 			// <li><b>飞信：</b><em></em></li>
-			String tempUrl = "http://www.eptrc.com/";
-			Document contractDoc = JavaUtil.getDocument(body);
-			String telXpath = ".LI[1]//EM/IMG";
-			Node telNode = XPathAPI.selectSingleNode(contractDoc, telXpath);
-			String telphone = "";
-			if (telNode != null) {
-				String telphoneUrl = tempUrl
-						+ JavaUtil.getNodeValue(telNode, "src");
-				telphone = getFileName(telphoneUrl);
-			}
-
-			String phoneXpath = ".LI[2]//EM/IMG";
-			Node phoneNode = XPathAPI.selectSingleNode(contractDoc, phoneXpath);
-			String phone = "";
-			if (phoneNode != null) {
-				String phoneUrl = tempUrl
-						+ JavaUtil.getNodeValue(phoneNode, "src");
-				phone = getFileName(phoneUrl);
-			}
-
-			String qqXpath = ".LI[4]//EM/IMG";
-			Node qqNode = XPathAPI.selectSingleNode(contractDoc, qqXpath);
-			String qq = "";
-			if (qqNode != null) {
-				String qqUrl = tempUrl + JavaUtil.getNodeValue(qqNode, "src");
-				qq = getFileName(qqUrl);
-			}
-
-			String msnXpath = ".LI[5]//EM/IMG";
-			Node msnNode = XPathAPI.selectSingleNode(contractDoc, msnXpath);
-			String msn = "";
-			if (msnNode != null) {
-				String msnUrl = tempUrl + JavaUtil.getNodeValue(msnNode, "src");
-				msn = getFileName(msnUrl);
-			}
-
-			String fxinXpath = ".LI[6]//EM/IMG";
-			Node fxinNode = XPathAPI.selectSingleNode(contractDoc, fxinXpath);
-			String fxin = "";
-			if (fxinNode != null) {
-				String fxinUrl = tempUrl
-						+ JavaUtil.getNodeValue(fxinNode, "src");
-				fxin = getFileName(fxinUrl);
-			}
+//			String tempUrl = "http://www.eptrc.com/";
+//			Document contractDoc = JavaUtil.getDocument(body);
+//			String telXpath = ".LI[1]//EM/IMG";
+//			Node telNode = XPathAPI.selectSingleNode(contractDoc, telXpath);
+//			String telphone = "";
+//			if (telNode != null) {
+//				String telphoneUrl = tempUrl
+//						+ JavaUtil.getNodeValue(telNode, "src");
+//				telphone = getFileName(telphoneUrl);
+//			}
+//
+//			String phoneXpath = ".LI[2]//EM/IMG";
+//			Node phoneNode = XPathAPI.selectSingleNode(contractDoc, phoneXpath);
+//			String phone = "";
+//			if (phoneNode != null) {
+//				String phoneUrl = tempUrl
+//						+ JavaUtil.getNodeValue(phoneNode, "src");
+//				phone = getFileName(phoneUrl);
+//			}
+//
+//			String qqXpath = ".LI[4]//EM/IMG";
+//			Node qqNode = XPathAPI.selectSingleNode(contractDoc, qqXpath);
+//			String qq = "";
+//			if (qqNode != null) {
+//				String qqUrl = tempUrl + JavaUtil.getNodeValue(qqNode, "src");
+//				qq = getFileName(qqUrl);
+//			}
+//
+//			String msnXpath = ".LI[5]//EM/IMG";
+//			Node msnNode = XPathAPI.selectSingleNode(contractDoc, msnXpath);
+//			String msn = "";
+//			if (msnNode != null) {
+//				String msnUrl = tempUrl + JavaUtil.getNodeValue(msnNode, "src");
+//				msn = getFileName(msnUrl);
+//			}
+//
+//			String fxinXpath = ".LI[6]//EM/IMG";
+//			Node fxinNode = XPathAPI.selectSingleNode(contractDoc, fxinXpath);
+//			String fxin = "";
+//			if (fxinNode != null) {
+//				String fxinUrl = tempUrl
+//						+ JavaUtil.getNodeValue(fxinNode, "src");
+//				fxin = getFileName(fxinUrl);
+//			}
 
 			cancer.setBirthday(birthday);
 			cancer.setComputer(computer);
@@ -355,11 +359,11 @@ public class PtPersonProcessImpl extends edu.xmu.zj.process.TaskAnalyseAbs {
 			cancer.setXueli(xueli);
 			cancer.setYixiang(yixiang);
 			cancer.setHuny(huny);
-			cancer.setTelphone(telphone);
-			cancer.setPhone(phone);
-			cancer.setMsn(msn);
-			cancer.setFxin(fxin);
-			cancer.setQq(qq);
+//			cancer.setTelphone(telphone);
+//			cancer.setPhone(phone);
+//			cancer.setMsn(msn);
+//			cancer.setFxin(fxin);
+//			cancer.setQq(qq);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
